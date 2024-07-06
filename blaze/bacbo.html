@@ -1,0 +1,193 @@
+<!DOCTYPE html><html lang="pt-br"><head><meta charset="utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA - BLAZE BACBO</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #343a40;
+            color: #ffffff;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            line-height: 1.0;
+            flex-direction: row;
+        }
+        .left-column {
+            flex: 0 0 30%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .right-column {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+        }
+        .iframe-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            border-radius: 0;
+        }
+        .iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .dark-button {
+            background-color: #495057;
+            color: #ffffff;
+            border: none;
+        }
+        .dark-button:hover {
+            background-color: #6c757d;
+        }
+
+        /* Estilos específicos para dispositivos móveis */
+        @media only screen and (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .left-column {
+                flex: 0 0 auto;
+                width: 100%;
+                padding: 20px;
+            }
+            .right-column {
+                flex: 0 0 auto;
+                width: 100%;
+                padding: 0;
+            }
+            .iframe-container {
+                position: relative;
+                height: 100vh;
+                background: #000000;
+                border-radius: 0;
+            }
+            .iframe-container iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                border: 0;
+            }
+            .voltar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="left-column">
+        <div class="text-center mb-3">
+            <span class="mr-3">✅ WIN: <span id="win"></span></span>
+            <span class="mr-3">🛑 LOSS: <span id="loss"></span></span>
+            <span class="mr-3">�&nbsp; EMPATE: <span id="empates"></span></span>
+        </div>
+        <div class="text-center mb-3">
+            <span class="mr-3">♻️ SG: <span id="sg"></span></span>
+            <span class="mr-3">♻️ G1: <span id="g1"></span></span>
+            <span class="mr-3">♻️ G2: <span id="g2"></span></span>
+        </div>
+        <div class="text-center mb-3">
+            <span>📊 Assertividade: <span id="assertividade"></span></span>
+        </div>
+        <div class="text-center mb-3">
+            <button id="changeStatusButton" class="btn dark-button">CHAMAR SINAL</button>
+            <button class="btn dark-button voltar" onclick="window.location.href = '/';">VOLTAR</button>
+        </div>
+        <div class="text-center mb-3" style="display: none;">
+            <button class="btn dark-button voltar" onclick="changeIframeSrc('https://blaze.com/pt/games/bac-bo')">Blaze</button>
+            <button class="btn dark-button voltar" onclick="changeIframeSrc('https://www.playpix.com/pb/live-casino/home/-1/All?searchTerm=bac%20bo&amp;openGames=420012128-real&amp;gameNames=Bac%20Bo')">PlayPix</button>
+        </div>
+        <div class="text-center mb-3">
+            <span id="sinal"></span>
+        </div>
+        <div id="data" class="mt-3 text-center">Falha: Failed to fetch</div>
+    </div>
+    <div class="right-column">
+        <div class="iframe-container">
+            <iframe src="https://blaze1.space/pt/games/bac-bo" name="myIFrame" id="myIFrame"></iframe>
+        </div>
+    </div>
+    <script>
+        // Função para buscar dados
+        function fetchData() {
+            fetch('api/api.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('data').innerHTML = data.error;
+                } else {
+                    const result = data[0];
+                    document.getElementById('sinal').innerText = result.sinal;
+                    document.getElementById('win').innerText = result.win;
+                    document.getElementById('sg').innerText = result.sg;
+                    document.getElementById('g1').innerText = result.g1;
+                    document.getElementById('g2').innerText = result.g2;
+                    document.getElementById('loss').innerText = result.loss;
+                    document.getElementById('empates').innerText = result.empates;
+
+                    const totalGames = result.win + result.loss;
+                    if (totalGames > 0) {
+                        const divisaoassertividade = result.win / totalGames;
+                        const assertividade = divisaoassertividade * 100;
+                        const assertividadeFormatted = assertividade.toFixed(2) + '%';
+                        document.getElementById('assertividade').innerText = assertividadeFormatted;
+                    } else {
+                        document.getElementById('assertividade').innerText = '0.00%';
+                    }
+
+                    if (result.status !== 'stop') {
+                        document.getElementById('changeStatusButton').style.display = 'none';
+                    } else {
+                        document.getElementById('changeStatusButton').style.display = 'inline-block';
+                    }
+                }
+            })
+            .catch(error => {
+                document.getElementById('data').innerHTML = 'Falha: ' + error.message;
+            });
+        }
+
+        // Função para alterar status
+        function changeStatus() {
+            const url = 'api/start.php';
+            const formData = new FormData();
+            formData.append('status', 'start');
+
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                fetchData(); // Chama a função para atualizar os dados após a alteração de status
+            })
+            .catch(error => {
+                document.getElementById('data').innerHTML = 'Falha ao mudar status: ' + error.message;
+            });
+        }
+
+        // Função para trocar o link do iframe
+        function changeIframeSrc(newSrc) {
+            document.getElementById('myIFrame').src = newSrc;
+        }
+
+        // Evento de clique no botão para chamar a função changeStatus
+        document.getElementById('changeStatusButton').addEventListener('click', changeStatus);
+
+        // Carrega os dados inicialmente e atualiza a cada segundo
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData(); // Busca os dados inicialmente
+            setInterval(fetchData, 1000); // Atualiza os dados a cada segundo
+        });
+    </script>
+
+</body></html>
