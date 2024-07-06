@@ -1,0 +1,132 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SINAIS IA</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 20px 0;
+            margin: 0;
+        }
+        .image-container {
+            margin-bottom: 15px;
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .text-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-container">
+            <h2>SINAIS IA</h2>
+            <p>EM DESENVOLVIMENTO</p>
+        </div>
+        <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4 justify-content-center">
+            <div class="col" align="center">
+                <div class="image-container">
+                    <a href="blaze/bacbo">
+                        <img src="images/bacbo.png" alt="BLAZE - BAC BO">
+                    </a>BLAZE - BAC BO
+                    <div class="game-signal" id="bacbo"></div>
+                </div>
+            </div>
+            <div class="col" align="center">
+                <div class="image-container">
+                    <a href="blaze/bacbobr">
+                        <img src="images/bacbobr.png" alt="BLAZE - BAC BO BR">
+                    </a>BLAZE - BAC BO BR
+                    <div class="game-signal" id="bacbobr"></div>
+                </div>
+            </div>
+            <div class="col" align="center">
+                <div class="image-container">
+                    <a href="blaze/crash">
+                        <img src="images/crash.png" alt="BLAZE - CRASH">
+                    </a>BLAZE - CRASH
+                    <div class="game-signal" id="crash"></div>
+                </div>
+            </div>
+            <div class="col" align="center">
+                <div class="image-container">
+                    <a href="blaze/double">
+                        <img src="images/double.png" alt="BLAZE - DOUBLE">
+                    </a>BLAZE - DOUBLE
+                    <div class="game-signal" id="double"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="text-container">
+            <spam>Idealizado por @DinhoNunesLC</spam>
+        </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            setInterval(function() {
+                // BLAZE - BAC BO
+                $.ajax({
+                    url: 'blaze/bacbo/api/api.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        $('#bacbo').text(data[0].sinal);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Erro ao obter dados da API (BLAZE - BAC BO):', error);
+                    }
+                });
+
+                // BLAZE - BAC BO BR
+                $.ajax({
+                    url: 'blaze/bacbobr/api/api.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        $('#bacbobr').text(data[0].sinal);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Erro ao obter dados da API (BLAZE - BAC BO BR):', error);
+                    }
+                });
+
+                // BLAZE - CRASH
+                $.ajax({
+                    url: 'blaze/crash/api/api.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        $('#crash').text(data[0].sinal);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Erro ao obter dados da API (BLAZE - CRASH):', error);
+                    }
+                });
+
+                // BLAZE - DOUBLE
+                $.ajax({
+                    url: 'blaze/double/api/api.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        $('#double').text(data[0].sinal);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Erro ao obter dados da API (BLAZE - DOUBLE):', error);
+                    }
+                });
+
+            }, 10000);
+        });
+    </script>
+
+</body></html>
